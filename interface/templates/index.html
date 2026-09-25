@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ClassWatch — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+
+  <!-- TOPBAR -->
+  <header class="topbar">
+    <div class="brand">CLASSWATCH <span class="brand-sep">/</span> PROTO v0.1</div>
+    <div class="topbar-right">
+      <div class="badge">
+        <span class="dot-live" aria-hidden="true"></span>
+        <span>LIVE</span>
+      </div>
+      <div class="badge" id="conn-badge" data-state="disconnected">Disconnected</div>
+      <div class="badge badge-session" id="session-time">00:00:00</div>
+      <button class="btn-session" id="session-toggle" data-state="idle">
+        <span class="session-btn-dot" aria-hidden="true"></span>
+        <span id="session-btn-label">Mulai Sesi</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- METRIC CARDS -->
+  <section class="metrics-row" aria-label="Ringkasan sesi">
+    <div class="metric">
+      <div class="metric-label">Mahasiswa Terdeteksi</div>
+      <div class="metric-value" id="m-detected">—</div>
+      <div class="metric-sub">dari kamera aktif</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Engagement Index</div>
+      <div class="metric-value" id="m-engagement">—</div>
+      <div class="metric-sub" id="m-eng-sub">menunggu data...</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Aktivitas Belajar</div>
+      <div class="metric-value" id="m-learning">—</div>
+      <div class="metric-sub">Memperhatikan · Menulis · Membaca</div>
+    </div>
+    <div class="metric">
+      <div class="metric-label">Non-Belajar</div>
+      <div class="metric-value" id="m-nonlearning">—</div>
+      <div class="metric-sub">Tidur · Bermain HP</div>
+    </div>
+  </section>
+
+  <!-- MAIN PANELS -->
+  <main class="panels">
+
+    <!-- PANEL KIRI: Aktivitas -->
+    <div class="panel">
+      <div class="panel-section">
+        <div class="panel-title">
+          <span class="title-dot dot-green" aria-hidden="true"></span>
+          Aktivitas Belajar
+        </div>
+        <div class="act-row">
+          <span class="act-label">Memperhatikan</span>
+          <div class="bar-track" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
+            <div class="bar-fill bar-learn" id="b-memperhatikan"></div>
+          </div>
+          <span class="act-pct" id="p-memperhatikan">0%</span>
+        </div>
+        <div class="act-row">
+          <span class="act-label">Menulis</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-learn" id="b-menulis"></div>
+          </div>
+          <span class="act-pct" id="p-menulis">0%</span>
+        </div>
+        <div class="act-row">
+          <span class="act-label">Membaca</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-learn" id="b-membaca"></div>
+          </div>
+          <span class="act-pct" id="p-membaca">0%</span>
+        </div>
+        <div class="act-row">
+          <span class="act-label">Angkat Tangan</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-learn" id="b-angkat_tangan"></div>
+          </div>
+          <span class="act-pct" id="p-angkat_tangan">0%</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="panel-section">
+        <div class="panel-title">
+          <span class="title-dot dot-red" aria-hidden="true"></span>
+          Aktivitas Non-Belajar
+        </div>
+        <div class="act-row">
+          <span class="act-label">Bermain HP</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-nonlearn" id="b-bermain_hp"></div>
+          </div>
+          <span class="act-pct" id="p-bermain_hp">0%</span>
+        </div>
+        <div class="act-row">
+          <span class="act-label">Tidur</span>
+          <div class="bar-track">
+            <div class="bar-fill bar-nonlearn" id="b-tidur"></div>
+          </div>
+          <span class="act-pct" id="p-tidur">0%</span>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="panel-section">
+        <div class="panel-title">Engagement Saat Ini</div>
+        <div class="engagement-label">
+          <span id="eng-label-text">—</span>
+          <span id="eng-label-pct" class="eng-pct-value">0%</span>
+        </div>
+        <div class="status-bar">
+          <div class="status-fill" id="eng-bar"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PANEL TENGAH: Kamera -->
+    <div class="panel">
+      <div class="panel-title">
+        <span class="title-dot dot-blue" aria-hidden="true"></span>
+        Live Camera Feed
+      </div>
+      <div class="cam-box">
+        <img id="cam-feed" src="" alt="Live camera feed" hidden>
+        <div id="cam-placeholder" class="cam-placeholder">
+          <div class="cam-placeholder-icon">⬡</div>
+          <p>Menunggu koneksi WebSocket...</p>
+        </div>
+        <div class="cam-overlay">
+          <div class="cam-badge cb-green">▶ LIVE</div>
+          <div class="cam-badge cb-blue" id="det-badge">— detected</div>
+        </div>
+        <div class="cam-fps" id="cam-fps">— fps</div>
+      </div>
+      <div class="ws-status-row">
+        <span class="ws-dot" id="ws-dot"></span>
+        <span class="conn-status" id="ws-status">WebSocket: idle</span>
+      </div>
+    </div>
+
+    <!-- PANEL KANAN: Report -->
+    <div class="panel panel-report">
+      <div class="panel-title">
+        <span class="title-dot dot-amber" aria-hidden="true"></span>
+        Laporan Sesi
+      </div>
+      <p class="report-desc">
+        Ringkasan aktivitas pembelajaran akan tersedia setelah sesi berjalan.
+      </p>
+
+      <div class="report-stats" id="report-stats" hidden>
+        <div class="report-stat-item">
+          <span class="report-stat-label">Avg Engagement</span>
+          <span class="report-stat-value" id="rpt-engagement">—</span>
+        </div>
+        <div class="report-stat-item">
+          <span class="report-stat-label">Total Frame</span>
+          <span class="report-stat-value" id="rpt-frames">—</span>
+        </div>
+        <div class="report-stat-item">
+          <span class="report-stat-label">Waktu Belajar</span>
+          <span class="report-stat-value" id="rpt-learning">—</span>
+        </div>
+      </div>
+
+      <div class="report-actions">
+        <button class="btn-secondary" id="preview-report">
+          Lihat Ringkasan
+        </button>
+        <button class="btn-primary" id="generate-report">
+          Unduh Report
+        </button>
+      </div>
+
+      <div class="report-message" id="report-message" hidden></div>
+    </div>
+
+  </main>
+
+  <script src="/static/js/script.js"></script>
+</body>
+</html>
